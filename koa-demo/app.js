@@ -28,10 +28,40 @@ router.get('/getParams', (ctx) => {
 
 router.post('/post', async ctx => {
   const { body } = ctx.request;
-  console.log(body);
+  console.log(ctx.request);
   ctx.body = {
     ...body
   }
+});
+
+router.post('/user', async ctx => {
+  const { name, email } = ctx.request.body;
+  const { role } = ctx.request.header;
+
+  if (!name || !email) {
+    ctx.body = {
+      code: 404,
+      msg: 'name 和 email 不為空'
+    }
+
+    return;
+  } else if (role !== 'admin') {
+    ctx.body = {
+      code: 401,
+      msg: 'unauthorized post'
+    }
+
+    return;
+  }
+
+  ctx.body = {
+    code: 200,
+    data: {
+      name,
+      email
+    },
+    msg: '成功'
+  };
 })
 
 /**
